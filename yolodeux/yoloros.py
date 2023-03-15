@@ -35,85 +35,71 @@ class camera(Node):
         self.config = rs.config()
         
         self.saved_img_number = 0
-                
 
-    def initialize_device():
-    # Create a pipeline
-        pipeline = rs.pipeline()
-        config = rs.config()
-
-        pipeline_wrapper = rs.pipeline_wrapper(pipeline)
-        pipeline_profile = config.resolve(pipeline_wrapper)
-        device = pipeline_profile.get_device()
-
-
-        config.enable_stream(rs.stream.depth, 640, 480, rs.format.z16, 30)
-        config.enable_stream(rs.stream.color, 640, 480, rs.format.bgr8, 30)
+        self.config.enable_stream(rs.stream.depth, 640, 480, rs.format.z16, 30)
+        self.config.enable_stream(rs.stream.color, 640, 480, rs.format.bgr8, 30)
 
         # Start streaming
-        profile = pipeline.start(config)
+        profile = self.pipeline.start(self.config)
 
         # Get stream profile and camera intrinsics
         color_profile = rs.video_stream_profile(profile.get_stream(rs.stream.color))
-        color_intrinsics = color_profile.get_intrinsics()
+        self.color_intrinsics = color_profile.get_intrinsics()
         # print(color_intrinsics)
 
         # Getting the depth sensor's depth scale (see rs-align example for explanation)
         depth_sensor = profile.get_device().first_depth_sensor()
-        depth_scale = depth_sensor.get_depth_scale()
+        self.depth_scale = depth_sensor.get_depth_scale()
         # print("Depth Scale is: " , depth_scale)
 
         # Create an align object
         # rs.align allows us to perform alignment of depth frames to others frames
         # The "align_to" is the stream type to which we plan to align depth frames.
         align_to = rs.stream.color
-        align = rs.align(align_to)
+        self.align = rs.align(align_to)
+                
 
 
 
-        return pipeline, align, depth_scale,color_intrinsics
+    # def position(point=(0,0)):
+    #     point = (x, y)
+    #     # Create REALSENSE  pipeline
+
+    #     # Get frameset of color and depth
+    #     frames = pipeline.wait_for_frames()
+
+    #     # Align the depth frame to color frame
+    #     aligned_frames = align.process(frames)
+
+    #     # Get aligned frames
+    #     aligned_depth_frame = aligned_frames.get_depth_frame()  # aligned_depth_frame is a 640x480 depth image
+    #     color_frame = aligned_frames.get_color_frame()
+
+    #     # Validate that both frames are valid
+    #     # if not aligned_depth_frame or not color_frame:
+    #     #     continue
+
+    #     depth_map = np.asanyarray(aligned_depth_frame.get_data()) * depth_scale * 1000
+    #     dist = aligned_depth_frame.get_distance(int(point[0]),
+    #                                             int(point[1])) * 1000  # convert to mm
+    #     # calculate real RGB world coordinates
+    #     X = dist * (point[0] - color_intrinsics.ppx) / color_intrinsics.fx
+    #     Y = dist * (point[1] - color_intrinsics.ppy) / color_intrinsics.fy
+    #     Z = dist
+
+    #     # calculate  real center of the realsense world coordinates in mm
+    #     X = X - 35
+    #     Y = Y
+    #     Z = Z
+
+    #     # calculate  real center of the realsense world coordinates in meter
+    #     X = X/1000
+    #     Y = Y/1000
+    #     Z = Z/1000
+    #     position=(X,Y,Z)
 
 
-    def position(point=(0,0)):
-        point = (x, y)
-        # Create REALSENSE  pipeline
-        pipeline, align, depth_scale, color_intrinsics = self.initialize_device()
-
-        # Get frameset of color and depth
-        frames = pipeline.wait_for_frames()
-
-        # Align the depth frame to color frame
-        aligned_frames = align.process(frames)
-
-        # Get aligned frames
-        aligned_depth_frame = aligned_frames.get_depth_frame()  # aligned_depth_frame is a 640x480 depth image
-        color_frame = aligned_frames.get_color_frame()
-
-        # Validate that both frames are valid
-        # if not aligned_depth_frame or not color_frame:
-        #     continue
-
-        depth_map = np.asanyarray(aligned_depth_frame.get_data()) * depth_scale * 1000
-        dist = aligned_depth_frame.get_distance(int(point[0]),
-                                                int(point[1])) * 1000  # convert to mm
-        # calculate real RGB world coordinates
-        X = dist * (point[0] - color_intrinsics.ppx) / color_intrinsics.fx
-        Y = dist * (point[1] - color_intrinsics.ppy) / color_intrinsics.fy
-        Z = dist
-
-        # calculate  real center of the realsense world coordinates in mm
-        X = X - 35
-        Y = Y
-        Z = Z
-
-        # calculate  real center of the realsense world coordinates in meter
-        X = X/1000
-        Y = Y/1000
-        Z = Z/1000
-        position=(X,Y,Z)
-
-
-        return position
+    #     return position
 
     def fonctionvision(self):
 
@@ -158,7 +144,7 @@ class camera(Node):
 
 
         # Start streaming
-        self.pipeline.start(self.config)
+       # self.pipeline.start(self.config)
 
         while isOk:
 
@@ -234,6 +220,7 @@ class camera(Node):
                 trackbar2(50)
 
                 boxes = []
+                boxes2 = []
                 confidences = []
                 classIDs = []
                 h, w = color_image.shape[:2]
@@ -246,10 +233,14 @@ class camera(Node):
                         if confidence > 0.5:
                             box = detection[:4] * np.array([w, h, w, h])
                             (centerX, centerY, width, height) = box.astype("int")
-                            x = int(centerX - (width / 2))
-                            y = int(centerY - (height / 2))
+                            x1 = (centerX - (width / 2))
+                            y1 = (centerY - (height / 2))
+                            x=int(x1)
+                            y=int(y1)
+                            box2 = [x, y,centerX ,centerY]
                             box = [x, y, int(width), int(height)]
                             boxes.append(box)
+                            boxes2.append(box2)
                             confidences.append(float(confidence))
                             classIDs.append(classID)
                 indices = cv2.dnn.NMSBoxes(boxes, confidences, 0.5, 0.4)
@@ -259,9 +250,38 @@ class camera(Node):
                         (w, h) = (boxes[i][2], boxes[i][3])     
                         color = [int(c) for c in colors[classIDs[i]]]
                         cv2.rectangle(color_image, (x, y), (x + w, y + h), color, 2)
-                        point = (x, y)
-                        print(self.position(point))
-                        text = "{}: {:.4f}".format(classes[classIDs[i]], confidences[i], self.position(point))
+                        point = (boxes2[i][2], boxes2[i][3])
+                        aligned_frames = self.align.process(frames)
+
+                        # Get aligned frames
+                        aligned_depth_frame = aligned_frames.get_depth_frame()  # aligned_depth_frame is a 640x480 depth image
+                        color_frame = aligned_frames.get_color_frame()
+
+                        # Validate that both frames are valid
+                        # if not aligned_depth_frame or not color_frame:
+                        #     continue
+
+                        depth_map = np.asanyarray(aligned_depth_frame.get_data()) * self.depth_scale * 1000
+                        dist = aligned_depth_frame.get_distance(int(point[0]),
+                                                                int(point[1])) * 1000  # convert to mm
+                        # calculate real RGB world coordinates
+                        X = dist * (point[0] - self.color_intrinsics.ppx) / self.color_intrinsics.fx
+                        Y = dist * (point[1] - self.color_intrinsics.ppy) / self.color_intrinsics.fy
+                        Z = dist
+
+                        # calculate  real center of the realsense world coordinates in mm
+                        X = X - 35
+                        Y = Y
+                        Z = Z
+
+                        # calculate  real center of the realsense world coordinates in meter
+                        X = X/1000
+                        Y = Y/1000
+                        Z = Z/1000
+                        position=(X,Y,Z)
+                        print(position)
+                
+                        text = "{}: {:.4f}".format(classes[classIDs[i]], confidences[i], position)
                         cv2.putText(color_image, text, (x, y - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 1)
 
                 cv2.imshow('window', color_image)
