@@ -199,16 +199,28 @@ class camera(Node):
 
                 print(len(outputs))
                 for out in outputs:
-                    print(out.shape)
+                     print(out.shape)
                 def trackbar2(x):
                     confidence = x/100
                     r = r0.copy()
                     for output in np.vstack(outputs):
-                        if output[4] > confidence:
+                        scores = output[5:]
+                        classID = np.argmax(scores)
+                        if output[4] > confidence and classID != 0:
                             x, y, w, h = output[:4]
                             p0 = int((x-w/2)*416), int((y-h/2)*416)
                             p1 = int((x+w/2)*416), int((y+h/2)*416)
                             cv2.rectangle(r, p0, p1, 1, 1)
+                        if classID == 0:
+                            x, y, w, h = output[:4]
+                            p0 = int((x-w/2)*416), int((y-h/2)*416)
+                            p1 = int((x+w/2)*416), int((y+h/2)*416)
+                            image=cv2.rectangle(r, p0, p1, 1, 1)
+                            ret, im= cv2.threshold(gray1, 100,255,cv2.THRESH_BINARY_INV)
+                            
+                            im2, contours, hierarchy= cv2.findContours(im, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+                            imagehumain=cv2.drawContours(im2, contours, -1, (0,255,0),2)
+                            cv2.imshow('imagehumain', imagehumain)
                     cv2.imshow('blob', r)
                     text = f'Bbox confidence={confidence}'
                     cv2.displayOverlay('blob', text)
@@ -280,10 +292,11 @@ class camera(Node):
                         Z = Z/1000
                         position=(X,Y,Z)
                         print(position)
-                
-                        text = "{}: {:.4f}".format(classes[classIDs[i]], confidences[i], position)
-                        cv2.putText(color_image, text, (x, y - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 1)
 
+                        text = "depth : {:}".format(round(position[2], 5))
+                        cv2.putText(color_image, text, (x, y - 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 1)
+                        text2= "{}: {:.4f}".format(classes[classIDs[i]], confidences[i])
+                        cv2.putText(color_image, text2, (x, y - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 1)
                 cv2.imshow('window', color_image)
                 #cv2.destroyAllWindows()
 
