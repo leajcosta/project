@@ -39,6 +39,10 @@ Installer requirements :
 
 Télécharger le fichier weights en suivant le lien suivant : https://github.com/RizwanMunawar/yolov7-segmentation/releases/download/yolov7-segmentation/yolov7-seg.pt  et le placer dans le dossier "yolov7-segmentation"
 
+Installer pyrealsense2:
+
+`pip install pyrealsense2`
+
 Lancer le programme en exécutant : 
 
 `python3 segment/predict.py`
