@@ -50,7 +50,7 @@ Lancer le programme en exécutant :
 
 ## Présentation de la solution
 
-### YoloV7
+### YoloV7 + segmentation
 
 <!-- Présentation succinth de cette solution, ces bases (torch) ; mise en parrallel des concurence-->
 
@@ -63,6 +63,7 @@ Lancer le programme en exécutant :
 1. **Modif-2** ...
 1. **Modif-3** ...
 1. **Modif-4** ...
+
 
 ### Intégration dans ROS2 
 
