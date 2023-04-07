@@ -8,6 +8,8 @@ Ce programme peut être déployé sur un robot, le processus pouvant fonctionner
 
 Une vidéo illutrant ce projet est disponible [ici](https://youtu.be/K1XV7OQ4Z0g)
 
+Ce projet a été réalisé sur Linux Ubuntu 20.04 et la compatibilité avec d'autres systèmes d'exploitation n'est pas garantie.
+
 ## Etapes à suivre pour lancer le code 
 
 L'installation est basée sur le git disponible [ici](https://github.com/RizwanMunawar/yolov7-segmentation/)
@@ -52,17 +54,19 @@ Lancer le programme en exécutant :
 
 ## Présentation de la solution
 
+Le programme proposé fonctionne en temps réel sur caméra RealSense. Il est capable de reconnaître 80 classes d'objets. Les objets reconnus sont ensuites placés dans des boîtes englobantes et le programme réalise une segmentation d'objets. L'option tracking, qui peut être desactivée dans le fichier predict.py permet de suivre la trajectoire du centre de la boîte de chaque objet. Après cela, la position du centre de gravité de l'objet est calculée et la distance entre ce point et la caméra est renvoyée.
+
 ### YoloV7 + segmentation
 
 <!-- Présentation succinth de cette solution, ces bases (torch) ; mise en parrallel des concurence-->
-
+Le programme s'appuie sur la bibliothèque torch YOLOv7 qui, grâce à des modèles pré-entraînés, est capable de reconnaître 80 classes d'objets, les placer dans des boîtes englobantes et faire de la segmentation d'objets.
 
 ### Appropriation de l'outil
 
 <!-- Modification que vous avez opéré pour vous approprié l'outils sur votre problématique. Pointeur vers le code ou on peut trouver l'éléments -->
 
-1. **Modif-1** ...
-1. **Modif-2** ...
+1. 
+2. **Modif-2** ...
 1. **Modif-3** ...
 1. **Modif-4** ...
 
