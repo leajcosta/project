@@ -65,8 +65,12 @@ Le programme s'appuie sur la bibliothèque torch YOLOv7 qui, grâce à des modè
 
 <!-- Modification que vous avez opéré pour vous approprié l'outils sur votre problématique. Pointeur vers le code ou on peut trouver l'éléments -->
 
-1. 
-2. **Modif-2** ...
+1. Calcul de la position du centre de gravité de chaque objet.
+  
+  Fichier segment/predict.py lignes 225 à 236
+2. Calcul de la distance entre l'objet et la caméra 
+
+  Fichier 
 1. **Modif-3** ...
 1. **Modif-4** ...
 
