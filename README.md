@@ -68,11 +68,16 @@ Le programme s'appuie sur la bibliothèque torch YOLOv7 qui, grâce à des modè
 1. Calcul de la position du centre de gravité de chaque objet.
   
   Fichier segment/predict.py lignes 225 à 236
+  
 2. Calcul de la distance entre l'objet et la caméra 
 
-  Fichier 
-1. **Modif-3** ...
-1. **Modif-4** ...
+  Fichier utils/dataloaders classe LoadStreams
+  
+  Fichier segment/predict.py lignes 129-130 et 235 à 248
+
+3. Rossification du code pour ROS2 
+
+  Fichier segment/predict.py 
 
 
 ### Intégration dans ROS2 
