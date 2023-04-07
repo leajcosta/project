@@ -6,7 +6,7 @@ Le tracking des objets ainsi que l'enregistrement des captures d'images sont ég
 
 Ce programme peut être déployé sur un robot, le processus pouvant fonctionner sous ROS2. L'ensemble de la documentation de ROS2 est disponible [ici](https://docs.ros.org/en/foxy/index.html).
 
-Une vidéo illutrant ce projet est disponible [ici] (https://youtu.be/K1XV7OQ4Z0g)
+Une vidéo illutrant ce projet est disponible [ici](https://youtu.be/K1XV7OQ4Z0g)
 
 ## Etapes à suivre pour lancer le code 
 
